@@ -1,11 +1,69 @@
 module.exports = {
-  purge: [],
-  darkMode: false, // or 'media' or 'class'
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  darkMode: 'class',
   theme: {
-    extend: {},
-  },
-  variants: {
-    extend: {},
+    extend: {
+      colors: {
+        'dark-purple': {
+          50: '#f8f9ff',
+          100: '#f0f2ff',
+          200: '#e6eaff',
+          300: '#d1d9ff',
+          400: '#b3c0ff',
+          500: '#8fa0ff',
+          600: '#6b7cff',
+          700: '#4f5bff',
+          800: '#3d47e8',
+          900: '#363bb5',
+          950: '#1a1d4a',
+        },
+        'dark': {
+          50: '#f6f6f7',
+          100: '#e3e4e6',
+          200: '#c7c9cc',
+          300: '#a3a6aa',
+          400: '#81848a',
+          500: '#666a70',
+          600: '#52555a',
+          700: '#43464a',
+          800: '#393c40',
+          900: '#323539',
+          950: '#1e1f22',
+        },
+        'purple': {
+          50: '#faf5ff',
+          100: '#f3e8ff',
+          200: '#e9d5ff',
+          300: '#d8b4fe',
+          400: '#c084fc',
+          500: '#a855f7',
+          600: '#9333ea',
+          700: '#7c3aed',
+          800: '#6b21a8',
+          900: '#581c87',
+          950: '#2d1b69',
+        },
+        'beige': {
+          50: '#fefdfb',
+          100: '#fdf9f3',
+          200: '#faf2e6',
+          300: '#f5e7d1',
+          400: '#eed6b5',
+          500: '#e4c195',
+          600: '#d4a86f',
+          700: '#c6934f',
+          800: '#a67a42',
+          900: '#8a6538',
+          950: '#4a351d',
+        }
+      },
+      fontFamily: {
+        'woods': ['"Quicksand"', '"Nunito Sans"', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
 }
