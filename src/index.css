@@ -13,9 +13,6 @@
   color: #d9d9e6;
   background-color: #1e1f22;
 
-  /* Tailwind v4 border radius variables */
-  --radius: 0.5rem;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
