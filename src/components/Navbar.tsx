@@ -18,8 +18,8 @@ const Navbar: React.FC = () => {
               to="/"
               className={`px-12 py-6 rounded-lg text-sm font-medium font-woods transition-all duration-100 ${
                 location.pathname === '/'
-                  ? 'bg-dark-800 text-dark-50 border border-dark-purple-300'
-                  : 'text-dark-200 hover:bg-dark-800 hover:text-dark-50 hover:border-dark-purple-200 border border-transparent'
+                  ? 'bg-dark-800 text-dark-50 border border-warm-beige-600'
+                  : 'text-dark-200 hover:bg-dark-800 hover:text-dark-50 hover:border-warm-beige-400 border border-transparent'
               }`}
             >
               Home
@@ -28,8 +28,8 @@ const Navbar: React.FC = () => {
               to="/find-song"
               className={`px-12 py-6 rounded-xl text-sm font-medium font-woods transition-all duration-100 ${
                 location.pathname === '/find-song'
-                  ? 'bg-dark-800 text-dark-50 border border-dark-purple-300'
-                  : 'text-dark-200 hover:bg-dark-800 hover:text-dark-50 hover:border-dark-purple-200 border border-transparent'
+                  ? 'bg-dark-800 text-dark-50 border border-warm-beige-600'
+                  : 'text-dark-200 hover:bg-dark-800 hover:text-dark-50 hover:border-warm-beige-400 border border-transparent'
               }`}
             >
               Find Song

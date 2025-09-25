@@ -7,11 +7,11 @@ import FindSong from './pages/FindSong'
 function App() {
   return (
     /* Main App Container */
-    <div className="h-screen bg-dark-950">
+    <div className="min-h-screen bg-dark-950">
       <Navbar />
 
       {/* Routes */}
-      <main className="h-[calc(100vh-4rem)]">
+      <main className="min-h-[calc(90vh-4rem)] flex items-center justify-center">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/find-song" element={<FindSong />} />

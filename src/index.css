@@ -11,7 +11,7 @@
 
   color-scheme: dark;
   color: #d9d9e6;
-  background-color: #1e1f22;
+  background-color: #22201e;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -21,11 +21,11 @@
 
 a {
   font-weight: 500;
-  color: #d9d9e6;
+  color: #d4a86f;
   text-decoration: inherit;
 }
 a:hover {
-  color: #d9d9e6;
+  color: #c6934f;
 }
 
 body {
@@ -49,13 +49,13 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #323539;
+  background-color: #22201e;
   color: #f6f6f7;
   cursor: pointer;
   transition: all 0.25s ease;
 }
 
 button:hover {
-  background-color: #393c40;
-  border-color: #ffffff;
+  background-color: #22201e;
+  border-color: #d4a86f;
 }
