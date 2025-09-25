@@ -6,12 +6,15 @@
 
 :root {
   font-family: 'Quicksand', 'Nunito Sans', sans-serif;
-  line-height: 1.6;
+  line-height: 2.5;
   font-weight: 400;
 
   color-scheme: dark;
-  color: #f6f6f7;
+  color: #d9d9e6;
   background-color: #1e1f22;
+
+  /* Tailwind v4 border radius variables */
+  --radius: 0.5rem;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -21,11 +24,11 @@
 
 a {
   font-weight: 500;
-  color: #ffffff;
+  color: #d9d9e6;
   text-decoration: inherit;
 }
 a:hover {
-  color: #ffffff;
+  color: #d9d9e6;
 }
 
 body {
@@ -39,12 +42,12 @@ h1 {
   font-size: 3.2em;
   line-height: 1.1;
   font-weight: 600;
-  color: #f6f6f7;
+  color: #d9d9e6;
 }
 
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: .5px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
@@ -54,6 +57,7 @@ button {
   cursor: pointer;
   transition: all 0.25s ease;
 }
+
 button:hover {
   background-color: #393c40;
   border-color: #ffffff;
