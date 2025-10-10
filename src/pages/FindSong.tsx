@@ -18,13 +18,6 @@ const FindSong: React.FC = () => {
         onSearch={handleSearch}
         className="mb-6"
       />
-      
-      {searchResults.length > 0 && (
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold text-dark-50 font-woods mb-4">Search Results</h2>
-          {/* Search results will be displayed here */}
-        </div>
-      )}
     </div>
   );
 };
