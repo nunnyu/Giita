@@ -5,35 +5,35 @@ const Navbar: React.FC = () => {
   const location = useLocation();
 
   return (
-    <nav className="bg-dark-900 shadow-lg border-b border-dark-800">
+    <nav className="bg-dark-980 shadow-lg border-b border-dark-970">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex justify-between h-20">
-          <div className="flex items-center">
+        <div className="flex items-center h-20">
+          <div className="flex items-center space-x-8">
             <Link to="/" className="text-xl font-bold text-dark-50 font-woods">
               {/* <img src={logo} alt="Logo" className="h-10 w-10" /> LOGO HERE */}
             </Link>
-          </div>
-          <div className="flex items-center space-x-12">
+            <div className="flex items-center space-x-6">
             <Link
               to="/"
-              className={`px-12 py-6 rounded-lg text-sm font-medium font-woods transition-all duration-100 ${
+              className={`px-8 py-3 rounded-lg text-sm font-medium font-woods transition-all duration-100 ${
                 location.pathname === '/'
-                  ? 'bg-dark-800 text-dark-50 border border-warm-beige-600'
-                  : 'text-dark-200 hover:bg-dark-800 hover:text-dark-50 hover:border-warm-beige-400 border border-transparent'
+                  ? 'bg-dark-950 text-dark-50'
+                  : 'text-dark-200 hover:bg-dark-970 hover:text-dark-50'
               }`}
             >
               Home
             </Link>
             <Link
               to="/find-song"
-              className={`px-12 py-6 rounded-xl text-sm font-medium font-woods transition-all duration-100 ${
+              className={`px-8 py-3 rounded-lg text-sm font-medium font-woods transition-all duration-100 ${
                 location.pathname === '/find-song'
-                  ? 'bg-dark-800 text-dark-50 border border-warm-beige-600'
-                  : 'text-dark-200 hover:bg-dark-800 hover:text-dark-50 hover:border-warm-beige-400 border border-transparent'
+                  ? 'bg-dark-950 text-dark-50'
+                  : 'text-dark-200 hover:bg-dark-970 hover:text-dark-50'
               }`}
             >
-              Find Song
+              Find Songs
             </Link>
+            </div>
           </div>
         </div>
       </div>

@@ -7,7 +7,7 @@ import FindSong from './pages/FindSong'
 function App() {
   return (
     /* Main App Container */
-    <div className="min-h-screen bg-dark-950">
+    <div className="min-h-screen bg-dark-990">
       <Navbar />
 
       {/* Routes */}

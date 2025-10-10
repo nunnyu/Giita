@@ -11,7 +11,7 @@
 
   color-scheme: dark;
   color: #d9d9e6;
-  background-color: #22201e;
+  background-color: #0a0b0c;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -24,15 +24,12 @@ a {
   color: #d4a86f;
   text-decoration: inherit;
 }
-a:hover {
-  color: #c6934f;
-}
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #1e1f22;
+  background-color: #050607;
 }
 
 h1 {
@@ -49,13 +46,13 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #22201e;
+  background-color: #0a0b0c;
   color: #f6f6f7;
   cursor: pointer;
   transition: all 0.25s ease;
 }
 
 button:hover {
-  background-color: #22201e;
-  border-color: #d4a86f;
+  background-color: #151617;
+  border-color: #ffffff;
 }
