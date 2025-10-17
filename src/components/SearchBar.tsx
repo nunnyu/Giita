@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-
-interface SearchBarProps {
-  placeholder?: string;
-  onSearch?: (query: string) => void;
-  className?: string;
-}
+import type { SearchBarProps } from "../types/components";
 
 const SearchBar: React.FC<SearchBarProps> = ({
   placeholder = "Search for songs...",
