@@ -17,9 +17,9 @@ async function testToken() {
   }
 }
 
-async function testSearchTrack() {
+async function testSearchTrack(name: string) {
   try {
-    const tracks = await searchTrack("Shape of You")
+    const tracks = await searchTrack(name)
     console.log("Tracks found:", tracks)
   } catch (err) {
     console.error("Error searching track:", err)
@@ -27,4 +27,4 @@ async function testSearchTrack() {
 }
 
 testToken();
-testSearchTrack();
+testSearchTrack("matsuri"); 

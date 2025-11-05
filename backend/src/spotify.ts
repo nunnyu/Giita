@@ -6,7 +6,7 @@ const SPOTIFY_CLIENT_ID = process.env.CLIENT_ID!
 const SPOTIFY_CLIENT_SECRET = process.env.CLIENT_SECRET!
 
 // Authorization token that must have been created previously. See: https://developer.spotify.com/documentation/web-api/concepts/authorization
-const token = 'BQAq82T1dyXEj5MFSyVrB-0FtoZW77uB8tG2_1wCurOpLyBu0yAWdj2JNl1tv5Z5Zh-TiaU5GRZBiuOVrEesPg2ROl_9zByKAAdSjfeL9asvJGqMJcFEdJ4S1sN_6Gt5U6QCzM4IPIFQh_u7Kw1geL0uVSkXz3ppKWgLLlVYSGi2fyn7hCVUiZSjPPKyEQjE4ooCAZOzbR22iRN994gWZ7BQ6M60AlV3jUWVD1kuI8bsaRAVLBU9Rm8iw4R1Xc7Rfbn9kN-7lUZjcFdHDKgWfD6e5cs13HIE4dzgmu4WafdriIMjdhtCrwQS4_rn-W3DPceD';
+const token = await getSpotifyToken();
 async function fetchWebApi(endpoint: string, method: string, body?: any) {
   const res = await fetch(`https://api.spotify.com/${endpoint}`, {
     headers: {
