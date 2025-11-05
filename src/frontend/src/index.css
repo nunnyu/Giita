@@ -34,7 +34,18 @@ html, body {
   background-color: #050607;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+nav {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
 #root {
+  margin: 0;
+  padding: 0;
   height: 100vh;
   overflow: hidden;
 }

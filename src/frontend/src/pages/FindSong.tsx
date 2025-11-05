@@ -6,8 +6,6 @@ const FindSong: React.FC = () => {
 
   const handleSearch = (query: string) => {
     console.log('Searching for:', query);
-    // TODO: Implement actual search functionality
-    // For now, just log the query
   };
 
   return (

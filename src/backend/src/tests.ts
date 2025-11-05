@@ -6,7 +6,7 @@ console.log("CLIENT_ID:", process.env.CLIENT_ID || "UNDEFINED")
 console.log("CLIENT_SECRET:", process.env.CLIENT_SECRET ? "***EXISTS***" : "UNDEFINED")
 
 import { getSpotifyToken } from "./spotify"
-import { searchTrack } from "./spotify"
+import { search } from "./spotify"
 
 async function testToken() {
   try {
@@ -17,14 +17,14 @@ async function testToken() {
   }
 }
 
-async function testSearchTrack(name: string) {
+async function testSearch(name: string) {
   try {
-    const tracks = await searchTrack(name)
-    console.log("Tracks found:", tracks)
+    const tracks = await search(name)
+    console.log("Tracks found:", tracks.map(track => track.name + ", " + track.artists[0].name))
   } catch (err) {
     console.error("Error searching track:", err)
   }
 }
 
 testToken();
-testSearchTrack("matsuri"); 
+testSearch("freedom ado"); 

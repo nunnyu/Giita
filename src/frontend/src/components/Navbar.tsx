@@ -5,7 +5,7 @@ const Navbar: React.FC = () => {
   const location = useLocation();
 
   return (
-    <nav className="bg-dark-980 shadow-lg border-b border-dark-970">
+    <nav className="bg-dark-980 shadow-lg border-b border-dark-970 m-0">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center h-20">
           <div className="flex items-center space-x-8">
