@@ -8,6 +8,11 @@ const SPOTIFY_CLIENT_SECRET = process.env.CLIENT_SECRET!
 let cachedToken: string | null = null
 let tokenExpiry: number = 0
 
+/**
+ * Fetch the web API from the spotify API using getSpotifyToken()
+ * @param endpoint - The endpoint to fetch from
+ * @returns The data from the endpoint
+ */
 async function fetchWebApi(endpoint: string) {
   const token = await getSpotifyToken();
   const res = await axios.get(`https://api.spotify.com/${endpoint}`, {

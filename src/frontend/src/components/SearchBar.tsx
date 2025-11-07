@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { SearchBarProps } from "../types/components";
+import type { SearchBarProps } from "../types";
 
 const SearchBar: React.FC<SearchBarProps> = ({
   placeholder = "Search for songs...",

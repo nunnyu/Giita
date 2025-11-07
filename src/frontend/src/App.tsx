@@ -4,6 +4,10 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import FindSong from "./pages/FindSong";
 
+/**
+ * Main App component
+ * @returns The main app component
+ */
 function App() {
   return (
     /* Main App Container */

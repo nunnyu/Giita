@@ -17,3 +17,15 @@ export interface FormField {
   required?: boolean;
   placeholder?: string;
 }
+
+// Spotify search results type
+export interface SpotifySearchResults {
+  tracks: {
+    items: {
+      id: string;
+      name: string;
+      artists: { name: string }[];
+      album: { name: string };
+    }[];
+  };
+}
