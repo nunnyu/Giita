@@ -30,17 +30,19 @@ const FindSong: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center">
+    <div className="flex flex-col items-center py-3">
       {/* Search Bar */}
-      <div className="text-center py-6">
+      <div className="text-center">
         <SearchBar
           placeholder="Enter song name or artist..."
           onSearch={handleSearch}
-          className="mb-6 "
+          className="mb-6"
         />
         {/* Status Messages */}
-        <div className="h-6">
-          {isLoading && <div className="text-dark-300">Searching...</div>}
+        <div className="h-6 flex items-center justify-center">
+          {isLoading && (
+            <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin opacity-50"></div>
+          )}
           {error && <div className="text-red-500">{error}</div>}
           {hasSearched &&
             !isLoading &&
@@ -49,25 +51,22 @@ const FindSong: React.FC = () => {
               <div className="text-dark-300">No results found.</div>
             )}
         </div>
-        {/* Results */}
-        <div className="text-white mt-9 max-h-[400px] overflow-y-auto">
-          {searchResults?.tracks?.items?.length > 0 &&
-            searchResults.tracks.items.map((result) => {
-              return (
-                <div
-                  key={result.id}
-                  className="mb-4 p-1 rounded-lg"
-                >
-                  <h2 className="text-xl">
-                    {result.name.length > 25
-                      ? result.name.substring(0, 25) + "..."
-                      : result.name}
-                  </h2>
-                  <p className="text-dark-300">{result.artists[0].name}</p>
-                </div>
-              );
-            })}
-        </div>
+      </div>
+      {/* Results - Centered below search bar */}
+      <div className="text-white mt-9 min-h-[300px] max-h-[300px] max-w-[250px] overflow-y-auto text-center">
+        {searchResults?.tracks?.items?.length > 0 &&
+          searchResults.tracks.items.map((result) => {
+            return (
+              <div key={result.id} className="mb-4 p-1 rounded-lg">
+                <h2 className="font-semibold">
+                  {result.name.length > 25
+                    ? result.name.substring(0, 25) + "..."
+                    : result.name}
+                </h2>
+                <p className="text-dark-300">{result.artists[0].name}</p>
+              </div>
+            );
+          })}
       </div>
     </div>
   );

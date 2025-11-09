@@ -21,7 +21,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className={`w-[275px] ${className}`}>
-      <div className="relative">
+      <div className="relative opacity-90">
         {/* Text input */}
         <input
           type="text"
