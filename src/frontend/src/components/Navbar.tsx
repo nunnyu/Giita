@@ -20,7 +20,7 @@ const Navbar: React.FC = () => {
                   ? 'bg-dark-950 text-dark-50'
                   : 'text-dark-200 hover:bg-dark-970 hover:text-dark-50'
               }`}
-            >
+            > 
               Home
             </Link>
             <Link

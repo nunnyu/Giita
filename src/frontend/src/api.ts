@@ -11,5 +11,11 @@ export default async function spotifySearch(query: string): Promise<SpotifySearc
             q: query,
         },
     });
+    console.log("Raw API response:", response.data);
+    console.log("Response structure:", {
+        isArray: Array.isArray(response.data),
+        hasTracks: !!response.data.tracks,
+        hasItems: !!response.data.tracks?.items,
+    });
     return response.data;
 }

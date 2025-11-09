@@ -19,8 +19,8 @@ async function testToken() {
 
 async function testSearch(name: string) {
   try {
-    const tracks = await search(name)
-    console.log("Tracks found:", tracks.map(track => track.name + ", " + track.artists[0].name))
+    const result = await search(name)
+    console.log("Tracks found:", result.tracks.items.map(track => track.name + ", " + track.artists[0].name));
   } catch (err) {
     console.error("Error searching track:", err)
   }

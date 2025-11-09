@@ -26,7 +26,7 @@ function App() {
         <Navbar />
 
         {/* Routes */}
-        <main className="flex-1 flex items-center justify-center overflow-hidden">
+        <main className="flex-1 flex items-center justify-center overflow-y-auto">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/find-song" element={<FindSong />} />

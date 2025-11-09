@@ -1,37 +1,73 @@
-import React, { useState } from 'react';
-import SearchBar from '../components/SearchBar';
-import spotifySearch from '../api';
-import type { SpotifySearchResults } from '../types';
+import React, { useState } from "react";
+import SearchBar from "../components/SearchBar";
+import spotifySearch from "../api";
+import type { SpotifySearchResults } from "../types";
 
 const FindSong: React.FC = () => {
-    const [searchResults, setSearchResults] = useState<SpotifySearchResults>({ tracks: { items: [] } });
+  const [searchResults, setSearchResults] = useState<SpotifySearchResults>({
+    tracks: { items: [] },
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const handleSearch = async (query: string) => {
-    const results = await spotifySearch(query);
-    console.log('Searching for:', query);
+    console.log("Searching for:", query);
+    setIsLoading(true);
+    setError(null);
+    setHasSearched(true); // one time flag to indicate a search has been made
 
-    setSearchResults(results);
+    try {
+      const results = await spotifySearch(query);
+      setSearchResults(results);
+    } catch (err) {
+      console.error("Search error:", err);
+      setError("Failed search...");
+      setSearchResults({ tracks: { items: [] } });
+    } finally {
+      setIsLoading(false);
+    }
   };
-  
-  // TODO: fix this so that the search results are displayed correctly (and debugging)
+
   return (
-    <div className="text-center py-8">
-      <SearchBar 
-        placeholder="Enter song name or artist..."
-        onSearch={handleSearch}
-        className="mb-6"
-      />
-      <div className="text-white">
-        {searchResults?.tracks?.items?.map((result) => {
-          console.log("Rendering track:", result);
-          return (
-            <div key={result.id}>
-              <h2>{result?.name}</h2>
-              <p>{result?.artists.map((artist) => artist.name).join(', ')}</p>
-              <p>{result?.album.name}</p>
-            </div>
-          );
-        })}
+    <div className="flex items-center">
+      {/* Search Bar */}
+      <div className="text-center py-6">
+        <SearchBar
+          placeholder="Enter song name or artist..."
+          onSearch={handleSearch}
+          className="mb-6 "
+        />
+        {/* Status Messages */}
+        <div className="h-6">
+          {isLoading && <div className="text-dark-300">Searching...</div>}
+          {error && <div className="text-red-500">{error}</div>}
+          {hasSearched &&
+            !isLoading &&
+            !error &&
+            searchResults?.tracks?.items?.length === 0 && (
+              <div className="text-dark-300">No results found.</div>
+            )}
+        </div>
+        {/* Results */}
+        <div className="text-white mt-9 max-h-[400px] overflow-y-auto">
+          {searchResults?.tracks?.items?.length > 0 &&
+            searchResults.tracks.items.map((result) => {
+              return (
+                <div
+                  key={result.id}
+                  className="mb-4 p-1 rounded-lg"
+                >
+                  <h2 className="text-xl">
+                    {result.name.length > 25
+                      ? result.name.substring(0, 25) + "..."
+                      : result.name}
+                  </h2>
+                  <p className="text-dark-300">{result.artists[0].name}</p>
+                </div>
+              );
+            })}
+        </div>
       </div>
     </div>
   );

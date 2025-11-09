@@ -64,10 +64,11 @@ export async function getSpotifyToken(): Promise<string> {
 /**
  * Search for a track by name.
  * @param query The query to search for.
- * @returns The tracks found.
+ * @returns The full Spotify search response with tracks.
  */
-export async function search(query: string): Promise<any[]> {
+export async function search(query: string): Promise<{ tracks: { items: any[] } }> {
   const encodedQuery = encodeURIComponent(query)
   const response = await fetchWebApi(`v1/search?q=${encodedQuery}&type=track`)
-  return response.tracks.items
+  // Spotify API returns { tracks: { items: [...] } }
+  return response;
 }

@@ -4,6 +4,28 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+}
+
+/* Text Selection */
+::selection {
+  background-color: rgba(255, 255, 255, 0.2); 
+  color: white
+}
+
 :root {
   font-family: 'Quicksand', 'Nunito Sans', sans-serif;
   line-height: 2.5;
