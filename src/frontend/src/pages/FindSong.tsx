@@ -30,16 +30,15 @@ const FindSong: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center py-3">
+    <div className="w-full h-full flex flex-col items-center justify-start py-8">
       {/* Search Bar */}
-      <div className="text-center">
+      <div className="text-center mb-6">
         <SearchBar
           placeholder="Enter song name or artist..."
           onSearch={handleSearch}
-          className="mb-6"
         />
-        {/* Status Messages */}
-        <div className="h-6 flex items-center justify-center">
+        {/* Status Messages and Loading */}
+        <div className="h-6 flex items-center justify-center mt-6">
           {isLoading && (
             <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin opacity-50"></div>
           )}
@@ -52,12 +51,12 @@ const FindSong: React.FC = () => {
             )}
         </div>
       </div>
-      {/* Results - Centered below search bar */}
-      <div className="text-white mt-9 min-h-[300px] max-h-[300px] max-w-[250px] overflow-y-auto text-center">
+      {/* Results */}
+      <div className="text-white max-h-[400px] max-w-[250px] overflow-y-auto text-center">
         {searchResults?.tracks?.items?.length > 0 &&
           searchResults.tracks.items.map((result) => {
             return (
-              <div key={result.id} className="mb-4 p-1 rounded-lg">
+              <div key={result.id} className="mb-4 p-1">
                 <h2 className="font-semibold">
                   {result.name.length > 25
                     ? result.name.substring(0, 25) + "..."
