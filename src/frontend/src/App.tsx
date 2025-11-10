@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import FindSong from "./pages/FindSong";
 import Error from "./pages/Error";
-import { HomeLayout, FindSongLayout } from "./components/Layouts";
+import { HomeLayout, FindSongLayout, ErrorLayout } from "./components/Layouts";
 
 /**
  * Main App component
@@ -22,7 +22,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomeLayout><Home /></HomeLayout>} />
             <Route path="/find-song" element={<FindSongLayout><FindSong /></FindSongLayout>} />
-            <Route path="*" element={<Error />} />
+            <Route path="*" element={<ErrorLayout><Error /></ErrorLayout>} />
           </Routes>
         </main>
       </div>
