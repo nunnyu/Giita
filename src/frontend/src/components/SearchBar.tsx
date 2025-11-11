@@ -28,7 +28,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           value={searchQuery}
           onChange={handleInputChange}
           placeholder={placeholder}
-          className="w-full px-4 py-3 pl-12 pr-4 bg-dark-970 rounded-lg text-dark-50 focus:outline-none font-woods"
+          className="w-full px-4 py-3 pl-12 pr-4 bg-dark-970 rounded-lg text-dark-50 focus:outline-none"
         />
         {/* Magnifying glass icon */}
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
