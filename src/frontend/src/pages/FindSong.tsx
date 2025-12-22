@@ -56,13 +56,20 @@ const FindSong: React.FC = () => {
         {searchResults?.tracks?.items?.length > 0 &&
           searchResults.tracks.items.map((result) => {
             return (
-              <div key={result.id} className="mb-4 p-1">
-                <h2 className="font-semibold">
-                  {result.name.length > 25
-                    ? result.name.substring(0, 25) + "..."
-                    : result.name}
-                </h2>
-                <p className="text-dark-300">{result.artists[0].name}</p>
+              <div className="flex items-center gap-10 pr-10">
+                {/* Button */}
+                <button className="text-xs bg-black bg-opacity-15">
+                  +
+                </button>
+                {/* Song Info */}
+                <div key={result.id} className="mb-4 text-center p-1 mx-auto">
+                  <h2 className="font-semibold text-center">
+                    {result.name.length > 25
+                      ? result.name.substring(0, 25) + "..."
+                      : result.name}
+                  </h2>
+                  <p className="text-dark-300 text-center">{result.artists[0].name}</p>
+                </div>
               </div>
             );
           })}

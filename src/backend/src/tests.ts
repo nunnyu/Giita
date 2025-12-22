@@ -5,8 +5,8 @@ console.log("\n=== After dotenv.config() ===")
 console.log("CLIENT_ID:", process.env.CLIENT_ID || "UNDEFINED")
 console.log("CLIENT_SECRET:", process.env.CLIENT_SECRET ? "***EXISTS***" : "UNDEFINED")
 
-import { getSpotifyToken } from "./spotify"
-import { search } from "./spotify"
+import { getSpotifyToken } from "./api/spotify"
+import { search } from "./api/spotify"
 
 async function testToken() {
   try {
