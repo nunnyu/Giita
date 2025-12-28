@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import SearchBar from "../components/SearchBar";
+import CustomSelect from "../components/CustomSelect";
 import spotifySearch, { getProfiles, addSongToProfile, getProfileSongs, type Profile, type ProfileSongWithDetails } from "../api";
 import type { SpotifySearchResults, SpotifyTrack } from "../types";
 
@@ -25,9 +26,12 @@ const FindSong: React.FC = () => {
   // Load profiles on mount
   useEffect(() => {
     const loadProfiles = async () => {
+      console.log("loadProfiles called");
       setIsLoadingProfiles(true);
       try {
+        console.log("Calling getProfiles()...");
         const profileList = await getProfiles();
+        console.log("getProfiles returned:", profileList);
         setProfiles(profileList);
         // Auto-select first profile if available and none selected
         if (profileList.length > 0) {
@@ -35,6 +39,8 @@ const FindSong: React.FC = () => {
         }
       } catch (err) {
         console.error("Error fetching profiles:", err);
+        // Set error state so user can see what went wrong
+        setError(err instanceof Error ? err.message : "Failed to load profiles");
       } finally {
         setIsLoadingProfiles(false);
       }
@@ -87,6 +93,16 @@ const FindSong: React.FC = () => {
       return;
     }
 
+    console.log("Adding song - track object:", track);
+    console.log("Adding song - track.id:", track.id);
+    console.log("Adding song - profileId:", selectedProfileId);
+    
+    if (!track.id) {
+      console.error("Track is missing id property!", track);
+      setAddSongError("Track is missing ID");
+      return;
+    }
+    
     setIsAddingSong(true);
     setAddSongError(null);
 
@@ -187,17 +203,14 @@ const FindSong: React.FC = () => {
           ) : profiles.length === 0 ? (
             <div className="text-dark-300 text-sm text-center">No profiles available.</div>
           ) : (
-            <select
-              value={selectedProfileId || ""}
-              onChange={(e) => handleProfileChange(Number(e.target.value))}
-              className="w-full bg-dark-800 text-white px-4 py-2 rounded border border-dark-700 focus:outline-none focus:border-dark-600"
-            >
-              {profiles.map((profile) => (
-                <option key={profile.id} value={profile.id}>
-                  {profile.name || `Profile #${profile.id}`}
-                </option>
-              ))}
-            </select>
+            <CustomSelect
+              value={selectedProfileId}
+              onChange={handleProfileChange}
+              options={profiles.map((profile) => ({
+                value: profile.id,
+                label: profile.name || `Profile #${profile.id}`,
+              }))}
+            />
           )}
         </div>
 
@@ -210,7 +223,7 @@ const FindSong: React.FC = () => {
           ) : !selectedProfileId ? (
             <div className="text-dark-300 text-center py-8">Select a profile to view songs</div>
           ) : profileSongs.length === 0 ? (
-            <div className="text-dark-300 text-center py-8">No songs in this profile yet</div>
+            <div className="text-dark-400 text-center py-8">No songs in this profile yet</div>
           ) : (
             <div className="space-y-2">
               {profileSongs.map((profileSong) => {

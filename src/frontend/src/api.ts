@@ -11,12 +11,15 @@ async function apiRequest<T>(
     data?: unknown,
     params?: Record<string, string | number>
 ): Promise<T> {
+    const url = `${API_BASE_URL}${endpoint}`;
+    console.log(`apiRequest: ${method.toUpperCase()} ${url}`, { params, data });
     try {
         const config: AxiosRequestConfig = { params };
         if (method === 'post') {
             config.data = data;
         }
-        const response = await axios[method](`${API_BASE_URL}${endpoint}`, config);
+        const response = await axios[method](url, config);
+        console.log(`apiRequest: Response from ${url}`, response.data);
         return response.data;
     } catch (error) {
         const axiosError = error as AxiosError<{ error?: string }>;
@@ -51,9 +54,12 @@ export interface Profile {
 /**
  * Get all available profiles
  * @returns The list of profiles
+ * TODO: fix ROW LEVEL SECURITY; this is not working as expected.
  */
 export async function getProfiles(): Promise<Profile[]> {
+    console.log("getProfiles: Making request to", `${API_BASE_URL}/profiles`);
     const response = await apiRequest<{ success: boolean; data: Profile[] }>('get', '/profiles');
+    console.log("getProfiles: Response received", response);
     return response.data || [];
 }
 
@@ -93,6 +99,7 @@ export async function getProfileSongs(profileId: number): Promise<ProfileSongWit
  * @returns The created profile_song entry
  */
 export async function addSongToProfile(track: SpotifyTrack, profileId: number): Promise<ProfileSong> {
+    console.log("addSongToProfile called with:", { track, profileId });
     const response = await apiRequest<{ success: boolean; data: ProfileSong }>('post', '/add-song-to-profile', {
         track,
         profileId,

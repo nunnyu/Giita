@@ -21,14 +21,14 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className={`w-[275px] ${className}`}>
-      <div className="relative opacity-90">
+      <div className="relative">
         {/* Text input */}
         <input
           type="text"
           value={searchQuery}
           onChange={handleInputChange}
           placeholder={placeholder}
-          className="w-full px-4 py-3 pl-12 pr-4 bg-dark-970 rounded-lg text-dark-50 focus:outline-none"
+          className="w-full px-4 py-3 pl-12 pr-4 bg-dark-800 bg-opacity-20 text-white rounded border border-dark-700 focus:outline-none focus:border-dark-600 placeholder:text-dark-400"
         />
         {/* Magnifying glass icon */}
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
