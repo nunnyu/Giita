@@ -8,6 +8,8 @@ const port = 5000;
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 
 // Get current user ID from request (header, query param, or env var)
 // For now, using environment variable as default for admin user
@@ -190,7 +192,10 @@ app.get("/api/profiles/:profileId/songs", async (req, res) => {
 
 // Add song to profile
 app.post("/api/add-song-to-profile", async (req, res) => {
-  const { track, profileId } = req.body;
+  console.log("headers:", req.headers);
+  console.log("body:", req.body);
+
+  const { track, profileId } = req.body.data;
   const userId = getCurrentUserId(req);
 
   if (!userId) {
@@ -209,11 +214,11 @@ app.post("/api/add-song-to-profile", async (req, res) => {
     typeof profileId === "number";
 
   if (!isTrackValid) {
-    return sendError(res, 400, "Invalid track");
+    return sendError(res, 400, "Invalid track: " + track);
   }
 
   if (!isProfileIdValid) {
-    return sendError(res, 400, "Invalid profileId");
+    return sendError(res, 400, "Invalid profileId: " + profileId);
   }
 
   // Check for id in multiple possible locations
