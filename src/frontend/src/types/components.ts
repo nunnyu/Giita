@@ -18,14 +18,20 @@ export interface FormField {
   placeholder?: string;
 }
 
+// Spotify track type
+export interface SpotifyTrack {
+  id: string;
+  name: string;
+  artists: { name: string }[];
+  album: { 
+    name: string;
+    images?: { url: string; height?: number; width?: number }[];
+  };
+}
+
 // Spotify search results type
 export interface SpotifySearchResults {
   tracks: {
-    items: {
-      id: string;
-      name: string;
-      artists: { name: string }[];
-      album: { name: string };
-    }[];
+    items: SpotifyTrack[];
   };
 }
