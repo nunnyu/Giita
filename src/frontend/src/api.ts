@@ -48,7 +48,7 @@ export default async function spotifySearch(query: string): Promise<SpotifySearc
 export interface Profile {
     id: number;
     name: string | null;
-    user_id: number;
+    user_uuid: string;
 }
 
 /**

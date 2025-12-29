@@ -11,25 +11,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-// Get current user ID from request (header, query param, or env var)
-// For now, using environment variable as default for admin user
-function getCurrentUserId(req: Request): number | null {
-  // Check for user_id in query parameter
-  const queryUserId = req.query.user_id;
-  if (queryUserId && !isNaN(Number(queryUserId))) {
-    return Number(queryUserId);
+// TODO: Replace with proper authentication middleware that extracts user from JWT token
+function getCurrentUserId(req: Request): string | null {
+  const queryUserId = req.query.user_uuid || req.query.user_id;
+  if (queryUserId && typeof queryUserId === "string") {
+    return queryUserId;
   }
 
-  // Check for user_id in header
-  const headerUserId = req.headers["x-user-id"];
-  if (headerUserId && !isNaN(Number(headerUserId))) {
-    return Number(headerUserId);
+  const headerUserId = req.headers["x-user-uuid"] || req.headers["x-user-id"];
+  if (headerUserId && typeof headerUserId === "string") {
+    return headerUserId;
   }
 
-  // Default to admin user from environment variable
   const adminUserId = process.env.ADMIN_USER_ID;
-  if (adminUserId && !isNaN(Number(adminUserId))) {
-    return Number(adminUserId);
+  if (adminUserId && typeof adminUserId === "string") {
+    return adminUserId;
   }
 
   return null;
@@ -106,21 +102,20 @@ app.get("/api/test-db", async (req, res) => {
 // Get all profiles for current user
 app.get("/api/profiles", async (req, res) => {
   const userId = getCurrentUserId(req);
-  console.log("Profiles route file loaded");
 
   if (!userId) {
     return sendError(
       res,
       400,
-      "User ID is required. Set ADMIN_USER_ID environment variable or provide user_id in query/header."
+      "User UUID is required. Set ADMIN_USER_ID environment variable or provide user_uuid in query/header."
     );
   }
 
   const { data, error } = await handleDbOperation(async () => {
     const result = await supabase
       .from("profile")
-      .select("id, name, user_id")
-      .eq("user_id", userId)
+      .select("id, name, user_uuid")
+      .eq("user_uuid", userId)
       .order("created_at", { ascending: false });
     return result;
   }, "Get profiles error");
@@ -144,7 +139,7 @@ app.get("/api/profiles/:profileId/songs", async (req, res) => {
     return sendError(
       res,
       400,
-      "User ID is required. Set ADMIN_USER_ID environment variable or provide user_id in query/header."
+      "User UUID is required. Set ADMIN_USER_ID environment variable or provide user_uuid in query/header."
     );
   }
 
@@ -153,7 +148,7 @@ app.get("/api/profiles/:profileId/songs", async (req, res) => {
     .from("profile")
     .select("id")
     .eq("id", profileId)
-    .eq("user_id", userId)
+    .eq("user_uuid", userId)
     .single();
 
   if (!profile) {
@@ -202,7 +197,7 @@ app.post("/api/add-song-to-profile", async (req, res) => {
     return sendError(
       res,
       400,
-      "User ID is required. Set ADMIN_USER_ID environment variable or provide user_id in query/header."
+      "User UUID is required. Set ADMIN_USER_ID environment variable or provide user_uuid in query/header."
     );
   }
 
@@ -235,9 +230,9 @@ app.post("/api/add-song-to-profile", async (req, res) => {
   // Verify that the profile belongs to the current user
   const { data: profile, error: profileError } = await supabase
     .from("profile")
-    .select("id, user_id")
+    .select("id, user_uuid")
     .eq("id", profileId)
-    .eq("user_id", userId)
+    .eq("user_uuid", userId)
     .single();
 
   if (profileError || !profile) {
