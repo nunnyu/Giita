@@ -69,6 +69,15 @@ export async function getSpotifyToken(): Promise<string> {
 export async function search(query: string): Promise<{ tracks: { items: any[] } }> {
   const encodedQuery = encodeURIComponent(query)
   const response = await fetchWebApi(`v1/search?q=${encodedQuery}&type=track`)
-  // Spotify API returns { tracks: { items: [...] } }
+  return response;
+}
+
+/**
+ * Get track details by Spotify track ID.
+ * @param trackId The Spotify track ID.
+ * @returns The track object with album images.
+ */
+export async function getTrack(trackId: string): Promise<any> {
+  const response = await fetchWebApi(`v1/tracks/${trackId}`)
   return response;
 }

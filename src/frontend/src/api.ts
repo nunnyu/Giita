@@ -78,6 +78,7 @@ export interface ProfileSongWithDetails {
         name: string | null;
         artist: string | null;
         album: string | null;
+        album_image_url: string | null;
         created_at: string;
     };
 }

@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import SearchBar from "../components/SearchBar";
 import CustomSelect from "../components/CustomSelect";
-import spotifySearch, { getProfiles, addSongToProfile, getProfileSongs, type Profile, type ProfileSongWithDetails } from "../api";
+import spotifySearch, {
+  getProfiles,
+  addSongToProfile,
+  getProfileSongs,
+  type Profile,
+  type ProfileSongWithDetails,
+} from "../api";
 import type { SpotifySearchResults, SpotifyTrack } from "../types";
 
 const FindSong: React.FC = () => {
@@ -11,14 +17,18 @@ const FindSong: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
-  
+
   // Profile selection
   const [profiles, setProfiles] = useState<Profile[]>([]);
-  const [selectedProfileId, setSelectedProfileId] = useState<number | null>(null);
-  const [profileSongs, setProfileSongs] = useState<ProfileSongWithDetails[]>([]);
+  const [selectedProfileId, setSelectedProfileId] = useState<number | null>(
+    null
+  );
+  const [profileSongs, setProfileSongs] = useState<ProfileSongWithDetails[]>(
+    []
+  );
   const [isLoadingProfiles, setIsLoadingProfiles] = useState(false);
   const [isLoadingProfileSongs, setIsLoadingProfileSongs] = useState(false);
-  
+
   // Adding songs
   const [isAddingSong, setIsAddingSong] = useState(false);
   const [addSongError, setAddSongError] = useState<string | null>(null);
@@ -40,7 +50,9 @@ const FindSong: React.FC = () => {
       } catch (err) {
         console.error("Error fetching profiles:", err);
         // Set error state so user can see what went wrong
-        setError(err instanceof Error ? err.message : "Failed to load profiles");
+        setError(
+          err instanceof Error ? err.message : "Failed to load profiles"
+        );
       } finally {
         setIsLoadingProfiles(false);
       }
@@ -96,13 +108,13 @@ const FindSong: React.FC = () => {
     console.log("Adding song - track object:", track);
     console.log("Adding song - track.id:", track.id);
     console.log("Adding song - profileId:", selectedProfileId);
-    
+
     if (!track.id) {
       console.error("Track is missing id property!", track);
       setAddSongError("Track is missing ID");
       return;
     }
-    
+
     setIsAddingSong(true);
     setAddSongError(null);
 
@@ -112,7 +124,8 @@ const FindSong: React.FC = () => {
       await loadProfileSongs(selectedProfileId);
     } catch (err) {
       console.error("Error adding song to profile:", err);
-      const errorMessage = err instanceof Error ? err.message : "Failed to add song to profile";
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to add song to profile";
       setAddSongError(errorMessage);
     } finally {
       setIsAddingSong(false);
@@ -124,7 +137,7 @@ const FindSong: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full flex gap-4 p-4 py-10">
+    <div className="w-full h-full flex gap-4 p-10 py-10">
       {/* Left Column - Search */}
       <div className="flex flex-col w-80 flex-shrink-0">
         <div className="mb-4">
@@ -146,14 +159,19 @@ const FindSong: React.FC = () => {
               )}
           </div>
         </div>
-        
+
         {/* Search Results */}
         <div className="text-white max-h-[calc(100vh-200px)] overflow-y-auto">
           {searchResults?.tracks?.items?.length > 0 &&
             searchResults.tracks.items.map((result) => {
-              const albumImage = result.album?.images?.[1]?.url || result.album?.images?.[0]?.url;
+              const albumImage =
+                result.album?.images?.[1]?.url ||
+                result.album?.images?.[0]?.url;
               return (
-                <div key={result.id} className="flex items-center gap-3 mb-3 p-2 hover:bg-dark-800/35 rounded transition-colors">
+                <div
+                  key={result.id}
+                  className="flex items-center gap-3 mb-3 p-2 hover:bg-dark-800/35 rounded transition-colors"
+                >
                   {/* Album Image */}
                   {albumImage ? (
                     <img
@@ -162,16 +180,18 @@ const FindSong: React.FC = () => {
                       className="w-12 h-12 rounded-full object-cover flex-shrink-0"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-dark-700 flex-shrink-0 flex items-center justify-center">
-                      <span className="text-dark-400 text-xs">🎵</span>
-                    </div>
+                    <div className="w-12 h-12 rounded-full bg-dark-700 flex-shrink-0 flex items-center justify-center"></div>
                   )}
                   {/* Button */}
                   <button
                     onClick={() => handleAddSongClick(result)}
                     className="text-sm bg-black bg-opacity-15 hover:bg-opacity-30 px-2 py-1 rounded transition-colors flex-shrink-0"
                     disabled={isAddingSong || !selectedProfileId}
-                    title={!selectedProfileId ? "Select a profile first" : "Add to profile"}
+                    title={
+                      !selectedProfileId
+                        ? "Select a profile first"
+                        : "Add to profile"
+                    }
                   >
                     +
                   </button>
@@ -180,7 +200,9 @@ const FindSong: React.FC = () => {
                     <h3 className="font-semibold text-sm truncate">
                       {result.name}
                     </h3>
-                    <p className="text-dark-300 text-xs truncate">{result.artists[0]?.name}</p>
+                    <p className="text-dark-300 text-xs truncate">
+                      {result.artists[0]?.name}
+                    </p>
                   </div>
                 </div>
               );
@@ -195,13 +217,17 @@ const FindSong: React.FC = () => {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Profile Selector */}
         <div className="mb-4">
-          <label className="block text-white text-sm font-medium mb-2 text-center">Select Profile</label>
+          <label className="block text-white text-sm font-medium mb-2 text-center">
+            Select Profile
+          </label>
           {isLoadingProfiles ? (
             <div className="flex items-center">
               <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin opacity-50"></div>
             </div>
           ) : profiles.length === 0 ? (
-            <div className="text-dark-300 text-sm text-center">No profiles available.</div>
+            <div className="text-dark-300 text-sm text-center">
+              No profiles available.
+            </div>
           ) : (
             <CustomSelect
               value={selectedProfileId}
@@ -221,23 +247,33 @@ const FindSong: React.FC = () => {
               <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin opacity-50"></div>
             </div>
           ) : !selectedProfileId ? (
-            <div className="text-dark-300 text-center py-8">Select a profile to view songs</div>
+            <div className="text-dark-300 text-center py-8">
+              Select a profile to view songs
+            </div>
           ) : profileSongs.length === 0 ? (
-            <div className="text-dark-400 text-center py-8">No songs in this profile yet</div>
+            <div className="text-dark-400 text-center py-8">
+              No songs in this profile yet
+            </div>
           ) : (
             <div className="space-y-2">
               {profileSongs.map((profileSong) => {
                 const song = profileSong.song;
+                const albumImage = song.album_image_url;
                 return (
                   <div
                     key={profileSong.id}
-                    className="bg-dark-800 p-4 rounded border border-dark-700 hover:bg-dark-700 transition-colors flex items-start gap-3"
+                    className="bg-dark-800 bg-opacity-20 p-4 rounded border border-dark-700 hover:bg-dark-700 hover:bg-opacity-40 transition-colors flex items-start gap-3"
                   >
-                    {/* Album Image Placeholder */}
-                    <div className="w-16 h-16 rounded-full bg-dark-700 flex-shrink-0 flex items-center justify-center">
-                      <span className="text-dark-400 text-xl">🎵</span>
-                    </div>
-                    {/* Song Info */}
+                    {albumImage ? (
+                      <img
+                        src={albumImage}
+                        alt={song.album || song.name || "Album"}
+                        className="w-16 h-16 rounded object-cover flex-shrink-0"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 rounded bg-dark-700 flex-shrink-0 flex items-center justify-center">
+                      </div>
+                    )}
                     <div className="flex-1 min-w-0">
                       <h3 className="text-white font-semibold mb-1">
                         {song.name || "Unknown Song"}
@@ -249,7 +285,9 @@ const FindSong: React.FC = () => {
                         <p className="text-dark-400 text-xs">{song.album}</p>
                       )}
                       {profileSong.notes && (
-                        <p className="text-dark-300 text-xs mt-2 italic">{profileSong.notes}</p>
+                        <p className="text-dark-300 text-xs mt-2 italic">
+                          {profileSong.notes}
+                        </p>
                       )}
                     </div>
                   </div>

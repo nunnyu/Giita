@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
-import { search } from "./api/spotify";
+import { search, getTrack } from "./api/spotify";
 import supabase from "./db";
 
 const app = express();
@@ -182,6 +182,45 @@ app.get("/api/profiles/:profileId/songs", async (req, res) => {
   if (error) {
     return sendError(res, 500, error);
   }
+
+  // Fetch album images from Spotify for each song using spotify_track_id
+  if (data && Array.isArray(data)) {
+    const songsWithImages = await Promise.all(
+      data.map(async (profileSong: any) => {
+        if (profileSong.song?.spotify_track_id) {
+          try {
+            const track = await getTrack(profileSong.song.spotify_track_id);
+            const albumImageUrl = track.album?.images?.[1]?.url || track.album?.images?.[0]?.url || null;
+            return {
+              ...profileSong,
+              song: {
+                ...profileSong.song,
+                album_image_url: albumImageUrl,
+              },
+            };
+          } catch (err) {
+            console.error(`Failed to fetch track ${profileSong.song.spotify_track_id}:`, err);
+            return {
+              ...profileSong,
+              song: {
+                ...profileSong.song,
+                album_image_url: null,
+              },
+            };
+          }
+        }
+        return {
+          ...profileSong,
+          song: {
+            ...profileSong.song,
+            album_image_url: null,
+          },
+        };
+      })
+    );
+    return sendSuccess(res, songsWithImages);
+  }
+
   sendSuccess(res, data || []);
 });
 
