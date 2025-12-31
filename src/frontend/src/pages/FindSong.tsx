@@ -5,6 +5,7 @@ import spotifySearch, {
   getProfiles,
   addSongToProfile,
   getProfileSongs,
+  removeSongFromProfile,
   type Profile,
   type ProfileSongWithDetails,
 } from "../api";
@@ -32,6 +33,7 @@ const FindSong: React.FC = () => {
   // Adding songs
   const [isAddingSong, setIsAddingSong] = useState(false);
   const [addSongError, setAddSongError] = useState<string | null>(null);
+  const [removingSongId, setRemovingSongId] = useState<number | null>(null);
 
   // Load profiles on mount
   useEffect(() => {
@@ -134,6 +136,20 @@ const FindSong: React.FC = () => {
 
   const handleProfileChange = (profileId: number) => {
     setSelectedProfileId(profileId);
+  };
+
+  const handleRemoveSong = async (profileSongId: number) => {
+    if (!selectedProfileId) return;
+
+    setRemovingSongId(profileSongId);
+    try {
+      await removeSongFromProfile(selectedProfileId, profileSongId);
+      await loadProfileSongs(selectedProfileId);
+    } catch (err) {
+      console.error("Error removing song:", err);
+    } finally {
+      setRemovingSongId(null);
+    }
   };
 
   return (
@@ -290,6 +306,14 @@ const FindSong: React.FC = () => {
                         </p>
                       )}
                     </div>
+                    <button
+                      onClick={() => handleRemoveSong(profileSong.id)}
+                      disabled={removingSongId === profileSong.id}
+                      className="text-white text-xl font-light w-8 h-8 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-sm border border-dark-600 transition-colors flex-shrink-0 hover:bg-black/30 disabled:opacity-50"
+                      title="Remove from profile"
+                    >
+                      ×
+                    </button>
                   </div>
                 );
               })}

@@ -6,7 +6,7 @@ const API_BASE_URL = "http://localhost:5000/api";
 
 // Helper function to handle API errors consistently
 async function apiRequest<T>(
-    method: 'get' | 'post',
+    method: 'get' | 'post' | 'delete',
     endpoint: string,
     data?: unknown,
     params?: Record<string, string | number>
@@ -15,7 +15,7 @@ async function apiRequest<T>(
     console.log(`apiRequest: ${method.toUpperCase()} ${url}`, { params, data });
     try {
         const config: AxiosRequestConfig = { params };
-        if (method === 'post') {
+        if (method === 'post' || method === 'delete') {
             config.data = data;
         }
         const response = await axios[method](url, config);
@@ -106,4 +106,13 @@ export async function addSongToProfile(track: SpotifyTrack, profileId: number): 
         profileId,
     });
     return response.data;
+}
+
+/**
+ * Remove a song from a profile
+ * @param profileId - The ID of the profile
+ * @param profileSongId - The ID of the profile_song entry to remove
+ */
+export async function removeSongFromProfile(profileId: number, profileSongId: number): Promise<void> {
+    await apiRequest<{ success: boolean; data: { deleted: boolean } }>('delete', `/profiles/${profileId}/songs/${profileSongId}`);
 }

@@ -364,6 +364,62 @@ app.post("/api/add-song-to-profile", async (req, res) => {
   sendSuccess(res, profileSong);
 });
 
+// Remove song from profile
+app.delete("/api/profiles/:profileId/songs/:profileSongId", async (req, res) => {
+  const profileId = parseInt(req.params.profileId);
+  const profileSongId = parseInt(req.params.profileSongId);
+  const userId = getCurrentUserId(req);
+
+  if (isNaN(profileId) || isNaN(profileSongId)) {
+    return sendError(res, 400, "Invalid profile ID or song ID");
+  }
+
+  if (!userId) {
+    return sendError(
+      res,
+      400,
+      "User UUID is required. Set ADMIN_USER_ID environment variable or provide user_uuid in query/header."
+    );
+  }
+
+  // Verify that the profile belongs to the current user
+  const { data: profile } = await supabase
+    .from("profile")
+    .select("id")
+    .eq("id", profileId)
+    .eq("user_uuid", userId)
+    .single();
+
+  if (!profile) {
+    return sendError(res, 403, "Profile not found or access denied");
+  }
+
+  // Verify that the profile_song belongs to this profile
+  const { data: profileSong } = await supabase
+    .from("profile_song")
+    .select("id, profile_id")
+    .eq("id", profileSongId)
+    .eq("profile_id", profileId)
+    .single();
+
+  if (!profileSong) {
+    return sendError(res, 404, "Song not found in this profile");
+  }
+
+  // Delete the profile_song entry
+  const { error: deleteError } = await supabase
+    .from("profile_song")
+    .delete()
+    .eq("id", profileSongId);
+
+  if (deleteError) {
+    console.error("Delete song error:", deleteError);
+    return sendError(res, 500, `Failed to remove song: ${deleteError.message}`);
+  }
+
+  sendSuccess(res, { deleted: true });
+});
+
 app.listen(port, () => {
   console.log(`Backend running on http://localhost:${port}`);
 });
