@@ -9,9 +9,6 @@ const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center h-20">
           <div className="flex items-center space-x-8">
-            <Link to="/" className="text-xl font-bold text-dark-50">
-              {/* <img src={logo} alt="Logo" className="h-10 w-10" /> LOGO HERE */}
-            </Link>
             <div className="flex items-center space-x-6">
             <Link
               to="/"

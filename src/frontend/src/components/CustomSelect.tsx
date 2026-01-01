@@ -79,8 +79,8 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
               onClick={() => handleSelect(option.value)}
               className={`w-full text-left px-4 py-2 text-white transition-colors rounded ${
                 value === option.value
-                  ? "bg-dark-800 bg-opacity-60"
-                  : "bg-dark-800 bg-opacity-20 hover:bg-dark-800 bg-opacity-40"
+                  ? "bg-dark-950 bg-opacity-95 border border-dark-400"
+                  : "bg-dark-950 bg-opacity-95 hover:bg-dark-800 border border-dark-600"
               }`}
             >
               {option.label}
