@@ -30,6 +30,16 @@ const Navbar: React.FC = () => {
             >
               Find Songs
             </Link>
+            <Link
+              to="/practice"
+              className={`px-8 py-3 rounded-lg text-sm font-medium border border-dark-700 transition-all duration-100 ${
+                location.pathname === '/practice'
+                  ? 'bg-dark-950 text-dark-50'
+                  : 'text-dark-200 hover:bg-dark-970 hover:text-dark-50'
+              }`}
+            >
+              Practice
+            </Link>
             </div>
           </div>
         </div>

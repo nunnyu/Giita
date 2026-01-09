@@ -6,7 +6,7 @@ const API_BASE_URL = "http://localhost:5000/api";
 
 // Helper function to handle API errors consistently
 async function apiRequest<T>(
-    method: 'get' | 'post' | 'delete',
+    method: 'get' | 'post' | 'put' | 'delete',
     endpoint: string,
     data?: unknown,
     params?: Record<string, string | number>
@@ -15,7 +15,7 @@ async function apiRequest<T>(
     console.log(`apiRequest: ${method.toUpperCase()} ${url}`, { params, data });
     try {
         const config: AxiosRequestConfig = { params };
-        if (method === 'post' || method === 'delete') {
+        if (method === 'post' || method === 'put' || method === 'delete') {
             config.data = data;
         }
         const response = await axios[method](url, config);
@@ -115,4 +115,25 @@ export async function addSongToProfile(track: SpotifyTrack, profileId: number): 
  */
 export async function removeSongFromProfile(profileId: number, profileSongId: number): Promise<void> {
     await apiRequest<{ success: boolean; data: { deleted: boolean } }>('delete', `/profiles/${profileId}/songs/${profileSongId}`);
+}
+
+/**
+ * Update a profile song (notes and resources)
+ * @param profileId - The ID of the profile
+ * @param profileSongId - The ID of the profile_song entry to update
+ * @param notes - The notes to save (optional)
+ * @param resources - The resources/links to save (optional)
+ * @returns The updated profile_song entry
+ */
+export async function updateProfileSong(
+    profileId: number,
+    profileSongId: number,
+    notes?: string,
+    resources?: Record<string, string>
+): Promise<ProfileSongWithDetails> {
+    const response = await apiRequest<{ success: boolean; data: ProfileSongWithDetails }>('put', `/profiles/${profileId}/songs/${profileSongId}`, {
+        notes,
+        resources,
+    });
+    return response.data;
 }

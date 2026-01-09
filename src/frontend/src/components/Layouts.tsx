@@ -38,6 +38,15 @@ function FindSongLayout({ children }: PropsWithChildren) {
   );
 }
 
+function PracticeLayout({ children }: PropsWithChildren) {
+  return (
+    <div className="w-full h-full relative m-0 p-0">
+      {/* No background image - just solid background */}
+      <div className="relative z-10 h-full">{children}</div>
+    </div>
+  );
+}
+
 function ErrorLayout({ children }: PropsWithChildren) {
   return (
     <div className="w-full h-full relative m-0 p-0">
@@ -57,4 +66,4 @@ function ErrorLayout({ children }: PropsWithChildren) {
   );
 }
 
-export { HomeLayout, FindSongLayout, ErrorLayout };
+export { HomeLayout, FindSongLayout, PracticeLayout, ErrorLayout };

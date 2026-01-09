@@ -107,6 +107,12 @@ const FindSong: React.FC = () => {
       return;
     }
 
+    // Check if profile already has 8 songs (maximum limit)
+    if (profileSongs.length >= 8) {
+      setAddSongError("8 songs maximum");
+      return;
+    }
+
     console.log("Adding song - track object:", track);
     console.log("Adding song - track.id:", track.id);
     console.log("Adding song - profileId:", selectedProfileId);
@@ -201,11 +207,13 @@ const FindSong: React.FC = () => {
                   {/* Button */}
                   <button
                     onClick={() => handleAddSongClick(result)}
-                    className="text-sm bg-black bg-opacity-15 hover:bg-opacity-30 px-2 py-1 rounded transition-colors flex-shrink-0"
-                    disabled={isAddingSong || !selectedProfileId}
+                    className="text-sm bg-black bg-opacity-15 hover:bg-opacity-30 px-2 py-1 rounded transition-colors flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={isAddingSong || !selectedProfileId || profileSongs.length >= 8}
                     title={
                       !selectedProfileId
                         ? "Select a profile first"
+                        : profileSongs.length >= 8
+                        ? "8 songs maximum"
                         : "Add to profile"
                     }
                   >

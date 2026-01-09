@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import { search, getTrack } from "./api/spotify";
-import supabase from "./db";
+import supabase, { setCurrentUserUuid } from "./db";
 
 const app = express();
 const port = 5000;
@@ -333,6 +333,22 @@ app.post("/api/add-song-to-profile", async (req, res) => {
     return sendError(res, 400, "Song already exists in this profile");
   }
 
+  // Check if profile already has 8 songs (maximum limit)
+  const { data: existingSongs, error: countError } = await supabase
+    .from("profile_song")
+    .select("id")
+    .eq("profile_id", profileId);
+
+  if (countError) {
+    console.error("Error counting profile songs:", countError);
+    return sendError(res, 500, `Failed to check profile songs: ${countError.message}`);
+  }
+
+  const songCount = existingSongs?.length ?? 0;
+  if (songCount >= 8) {
+    return sendError(res, 400, "8 songs maximum");
+  }
+
   // Create profile_song entry
   const { data: profileSong, error: profileSongError } = await supabase
     .from("profile_song")
@@ -418,6 +434,129 @@ app.delete("/api/profiles/:profileId/songs/:profileSongId", async (req, res) => 
   }
 
   sendSuccess(res, { deleted: true });
+});
+
+// Update profile song (notes and resources)
+app.put("/api/profiles/:profileId/songs/:profileSongId", async (req, res) => {
+  const profileId = parseInt(req.params.profileId);
+  const profileSongId = parseInt(req.params.profileSongId);
+  const userId = getCurrentUserId(req);
+
+  if (isNaN(profileId) || isNaN(profileSongId)) {
+    return sendError(res, 400, "Invalid profile ID or song ID");
+  }
+
+  if (!userId) {
+    return sendError(
+      res,
+      400,
+      "User UUID is required. Set ADMIN_USER_ID environment variable or provide user_uuid in query/header."
+    );
+  }
+
+  const { notes, resources } = req.body.data || {};
+
+  // Verify that the profile belongs to the current user
+  const { data: profile } = await supabase
+    .from("profile")
+    .select("id")
+    .eq("id", profileId)
+    .eq("user_uuid", userId)
+    .single();
+
+  if (!profile) {
+    return sendError(res, 403, "Profile not found or access denied");
+  }
+
+  // Verify that the profile_song belongs to this profile
+  const { data: existingProfileSong } = await supabase
+    .from("profile_song")
+    .select("id, profile_id")
+    .eq("id", profileSongId)
+    .eq("profile_id", profileId)
+    .single();
+
+  if (!existingProfileSong) {
+    return sendError(res, 404, "Song not found in this profile");
+  }
+
+  // Set the session variable for the current user UUID
+  await setCurrentUserUuid(userId);
+
+  // Update the profile_song entry
+  const updateData: { notes?: string; resources?: unknown } = {};
+  if (notes !== undefined) {
+    updateData.notes = notes;
+  }
+  if (resources !== undefined) {
+    updateData.resources = resources;
+  }
+
+  const { error: updateError } = await supabase
+    .from("profile_song")
+    .update(updateData)
+    .eq("id", profileSongId);
+
+  if (updateError) {
+    console.error("Update profile song error:", updateError);
+    return sendError(res, 500, `Failed to update profile song: ${updateError.message}`);
+  }
+
+  // Fetch the updated profile_song with song details
+  const { data: updatedProfileSong, error: fetchError } = await supabase
+    .from("profile_song")
+    .select(
+      `
+        id,
+        notes,
+        resources,
+        created_at,
+        song:song_id (
+          id,
+          spotify_track_id,
+          name,
+          artist,
+          album,
+          created_at
+        )
+      `
+    )
+    .eq("id", profileSongId)
+    .single();
+
+  if (fetchError || !updatedProfileSong) {
+    console.error("Fetch updated profile song error:", fetchError);
+    return sendError(res, 500, "Failed to fetch updated profile song");
+  }
+
+  // Fetch album image from Spotify
+  const profileSongWithImage: any = { ...updatedProfileSong };
+  if (profileSongWithImage.song && Array.isArray(profileSongWithImage.song) && profileSongWithImage.song.length > 0) {
+    const songData = profileSongWithImage.song[0];
+    if (songData?.spotify_track_id) {
+      try {
+        const track = await getTrack(songData.spotify_track_id);
+        const albumImageUrl = track.album?.images?.[1]?.url || track.album?.images?.[0]?.url || null;
+        profileSongWithImage.song = {
+          ...songData,
+          album_image_url: albumImageUrl,
+        };
+      } catch (err) {
+        console.error(`Failed to fetch track ${songData.spotify_track_id}:`, err);
+        profileSongWithImage.song = {
+          ...songData,
+          album_image_url: null,
+        };
+      }
+    } else {
+      profileSongWithImage.song = {
+        ...songData,
+        album_image_url: null,
+      };
+    }
+  }
+
+  sendSuccess(res, profileSongWithImage);
 });
 
 app.listen(port, () => {
