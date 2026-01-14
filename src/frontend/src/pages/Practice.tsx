@@ -31,6 +31,7 @@ const Practice: React.FC = () => {
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "unsaved" | null>(null);
   const [newLinkName, setNewLinkName] = useState("");
   const [newLinkUrl, setNewLinkUrl] = useState("");
+  const [previewedLinkName, setPreviewedLinkName] = useState<string | null>(null);
 
   const loadProfileSongs = useCallback(async (profileId: number) => {
     setIsLoadingProfileSongs(true);
@@ -50,6 +51,7 @@ const Practice: React.FC = () => {
         setSelectedSong(null);
         setEditableNotes("");
         setEditableLinks({});
+        setPreviewedLinkName(null);
       }
     } catch (err) {
       console.error("Error fetching profile songs:", err);
@@ -93,6 +95,7 @@ const Practice: React.FC = () => {
       setSelectedSong(null);
       setEditableNotes("");
       setEditableLinks({});
+      setPreviewedLinkName(null);
     }
   }, [selectedProfileId, loadProfileSongs]);
 
@@ -109,6 +112,12 @@ const Practice: React.FC = () => {
       setSaveStatus("saved");
       setNewLinkName("");
       setNewLinkUrl("");
+      // Auto-select first link for preview if available
+      const links = (selectedSong.resources && typeof selectedSong.resources === 'object' && selectedSong.resources !== null)
+        ? (selectedSong.resources as Record<string, string>)
+        : {};
+      const linkEntries = Object.entries(links);
+      setPreviewedLinkName(linkEntries.length > 0 ? linkEntries[0][0] : null);
     }
   }, [selectedSong]);
 
@@ -159,6 +168,7 @@ const Practice: React.FC = () => {
         })
       );
       setSaveStatus("saved");
+      setSaveError(null);
       
       // Clear saved status after 2 seconds
       setTimeout(() => {
@@ -228,8 +238,38 @@ const Practice: React.FC = () => {
     });
   };
 
+  // Helper function to extract YouTube video ID from URL
+  const getYouTubeVideoId = (url: string): string | null => {
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/)([^&\n?#]+)/,
+      /youtube\.com\/watch\?.*v=([^&\n?#]+)/,
+    ];
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match && match[1]) {
+        return match[1];
+      }
+    }
+    return null;
+  };
+
+  // Get the currently previewed link
+  const getPreviewedLink = (): { name: string; url: string } | null => {
+    if (!previewedLinkName || !editableLinks[previewedLinkName]) {
+      // Fallback to first link if selected link doesn't exist
+      const linkEntries = Object.entries(editableLinks);
+      if (linkEntries.length === 0) return null;
+      return { name: linkEntries[0][0], url: linkEntries[0][1] };
+    }
+    return { name: previewedLinkName, url: editableLinks[previewedLinkName] };
+  };
+
+  const handleSetPreviewLink = (linkName: string) => {
+    setPreviewedLinkName(linkName);
+  };
+
   return (
-    <div className="w-full h-full flex gap-4 p-10 py-10">
+    <div className="w-full flex gap-4 p-10 py-10">
       {/* Left Column - Minimal Profile & Song Selector */}
       <div className="flex flex-col w-[275px] flex-shrink-0 gap-3">
         {/* Profile Selector - Minimal */}
@@ -315,9 +355,9 @@ const Practice: React.FC = () => {
       {/* Right Column - Large Song Dashboard */}
       <div className="flex-1 flex flex-col min-w-0">
         {selectedSong ? (
-          <div className="h-full flex flex-col gap-6">
+          <div className="flex flex-col gap-6">
             {/* Song Header */}
-            <div className="flex gap-6 relative">
+            <div className="flex gap-6 relative flex-shrink-0">
               {/* Album Image - Large */}
               {selectedSong.song.album_image_url ? (
                 <img
@@ -344,6 +384,9 @@ const Practice: React.FC = () => {
               </div>
               {/* Save Button/Status - Top Right */}
               <div className="absolute top-0 right-0 flex items-center gap-2">
+                {saveError && (
+                  <span className="text-red-400 text-xs">{saveError}</span>
+                )}
                 {saveStatus === "saving" && (
                   <span className="text-dark-400 text-xs">Saving...</span>
                 )}
@@ -364,7 +407,7 @@ const Practice: React.FC = () => {
             </div>
 
             {/* Dashboard Sections */}
-            <div className="flex-1 grid grid-cols-2 gap-6 overflow-y-auto">
+            <div className="grid grid-cols-2 gap-6">
               {/* Notes Section */}
               <div className="flex flex-col">
                 <h3 className="text-white text-lg font-semibold mb-3">Notes</h3>
@@ -402,6 +445,17 @@ const Practice: React.FC = () => {
                               {value}
                             </a>
                           </div>
+                          <button
+                            onClick={() => handleSetPreviewLink(key)}
+                            className={`px-2 py-1 text-xs rounded border transition-colors ${
+                              previewedLinkName === key
+                                ? 'bg-dark-600 border-dark-500 text-white'
+                                : 'bg-dark-800 bg-opacity-20 hover:bg-opacity-30 border-dark-700 text-dark-300 hover:text-white'
+                            }`}
+                            title="Preview this link"
+                          >
+                            Preview
+                          </button>
                           <button
                             onClick={() => handleRemoveLink(key)}
                             className="text-white hover:text-gray-300 text-sm font-bold px-2"
@@ -459,6 +513,56 @@ const Practice: React.FC = () => {
                 </div>
               </div>
             </div>
+
+            {/* Link Preview - HUGE Tab Below Everything */}
+            {(() => {
+              const previewedLink = getPreviewedLink();
+              if (!previewedLink) return null;
+
+              const youtubeVideoId = getYouTubeVideoId(previewedLink.url);
+              
+              return (
+                <div className="w-full flex-1 min-h-[500px] flex flex-col bg-dark-800 bg-opacity-20 rounded-lg border border-dark-700 p-6">
+                  <h3 className="text-white text-lg font-semibold mb-4 flex-shrink-0">
+                    Link Preview: {previewedLink.name}
+                  </h3>
+                  
+                  <div className="flex-1 min-h-[400px] flex items-center justify-center">
+                    {youtubeVideoId ? (
+                      <div className="w-full h-full">
+                        {/* YouTube Embed */}
+                        <div className="relative w-full h-full" style={{ paddingBottom: '56.25%', maxHeight: '800px' }}>
+                          <iframe
+                            src={`https://www.youtube.com/embed/${youtubeVideoId}`}
+                            title={previewedLink.name}
+                            className="absolute top-0 left-0 w-full h-full rounded-lg"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-full h-full min-h-[400px] bg-dark-900 bg-opacity-50 rounded-lg border border-dark-600 p-8 flex items-center justify-center">
+                        <div className="text-center">
+                          <p className="text-white text-lg mb-2">{previewedLink.name}</p>
+                          <a
+                            href={previewedLink.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-400 hover:text-blue-300 text-sm underline break-all"
+                          >
+                            {previewedLink.url}
+                          </a>
+                          <p className="text-dark-400 text-xs mt-4">
+                            Preview not available for this link type
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         ) : (
           <div className="h-full flex items-center justify-center">
