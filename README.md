@@ -42,8 +42,3 @@ This is a modern music practice management platform that combines song discovery
 ### APIs & Services
 - **Spotify Web API** - Music search and audio features (OAuth 2.0 Client Credentials)
 - **Supabase** - Database (PostgreSQL) and authentication
-
-### Development Tools
-- **Git** - Version control
-- **npm** - Package manager
-- **Concurrently** - Run multiple npm scripts simultaneously

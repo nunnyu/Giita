@@ -6,6 +6,7 @@ import spotifySearch, {
   addSongToProfile,
   getProfileSongs,
   removeSongFromProfile,
+  updateProfileName,
   type Profile,
   type ProfileSongWithDetails,
 } from "../api";
@@ -34,6 +35,11 @@ const FindSong: React.FC = () => {
   const [isAddingSong, setIsAddingSong] = useState(false);
   const [addSongError, setAddSongError] = useState<string | null>(null);
   const [removingSongId, setRemovingSongId] = useState<number | null>(null);
+  
+  // Renaming profile
+  const [isRenaming, setIsRenaming] = useState(false);
+  const [renameInput, setRenameInput] = useState("");
+  const [showRenameInput, setShowRenameInput] = useState(false);
 
   // Load profiles on mount
   useEffect(() => {
@@ -142,6 +148,41 @@ const FindSong: React.FC = () => {
 
   const handleProfileChange = (profileId: number) => {
     setSelectedProfileId(profileId);
+  };
+
+  const handleRenameClick = () => {
+    const currentProfile = profiles.find((p) => p.id === selectedProfileId);
+    if (currentProfile) {
+      setRenameInput(currentProfile.name || "");
+      setShowRenameInput(true);
+    }
+  };
+
+  const handleRenameSubmit = async () => {
+    if (!selectedProfileId || !renameInput.trim()) return;
+
+    setIsRenaming(true);
+    try {
+      const updatedProfile = await updateProfileName(selectedProfileId, renameInput.trim());
+      // Update the profiles list
+      setProfiles((prev) =>
+        prev.map((p) => (p.id === updatedProfile.id ? updatedProfile : p))
+      );
+      setShowRenameInput(false);
+      setRenameInput("");
+    } catch (err) {
+      console.error("Error renaming profile:", err);
+      setAddSongError(
+        err instanceof Error ? err.message : "Failed to rename profile"
+      );
+    } finally {
+      setIsRenaming(false);
+    }
+  };
+
+  const handleRenameCancel = () => {
+    setShowRenameInput(false);
+    setRenameInput("");
   };
 
   const handleRemoveSong = async (profileSongId: number) => {
@@ -253,14 +294,60 @@ const FindSong: React.FC = () => {
               No profiles available.
             </div>
           ) : (
-            <CustomSelect
-              value={selectedProfileId}
-              onChange={handleProfileChange}
-              options={profiles.map((profile) => ({
-                value: profile.id,
-                label: profile.name || `Profile #${profile.id}`,
-              }))}
-            />
+            <div className="flex items-center gap-2">
+              <div className="flex-1">
+                <CustomSelect
+                  value={selectedProfileId}
+                  onChange={handleProfileChange}
+                  options={profiles.map((profile) => ({
+                    value: profile.id,
+                    label: profile.name || `Profile #${profile.id}`,
+                  }))}
+                />
+              </div>
+              {selectedProfileId && !showRenameInput && (
+                <button
+                  onClick={handleRenameClick}
+                  className="px-3 py-1 bg-dark-800 bg-opacity-20 hover:bg-opacity-30 text-white text-sm font-medium rounded border border-dark-700 transition-colors"
+                  title="Rename profile"
+                >
+                  Rename
+                </button>
+              )}
+              {showRenameInput && (
+                <div className="flex items-center gap-2 flex-1">
+                  <input
+                    type="text"
+                    value={renameInput}
+                    onChange={(e) => setRenameInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleRenameSubmit();
+                      } else if (e.key === 'Escape') {
+                        handleRenameCancel();
+                      }
+                    }}
+                    className="flex-1 px-3 py-1 bg-dark-800 bg-opacity-20 text-white text-sm rounded border border-dark-700 focus:outline-none focus:border-dark-600"
+                    placeholder="Profile name"
+                    autoFocus
+                  />
+                  <button
+                    onClick={handleRenameSubmit}
+                    disabled={isRenaming || !renameInput.trim()}
+                    className="px-2 py-1 bg-dark-700 hover:bg-dark-600 text-white text-xs rounded border border-dark-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    ✓
+                  </button>
+                  <button
+                    onClick={handleRenameCancel}
+                    disabled={isRenaming}
+                    className="px-2 py-1 bg-dark-700 hover:bg-dark-600 text-white text-xs rounded border border-dark-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+            </div>
           )}
         </div>
 

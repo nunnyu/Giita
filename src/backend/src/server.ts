@@ -126,6 +126,64 @@ app.get("/api/profiles", async (req, res) => {
   sendSuccess(res, data || []);
 });
 
+// Update profile name
+app.put("/api/profiles/:profileId", async (req, res) => {
+  const profileId = parseInt(req.params.profileId);
+  const userId = getCurrentUserId(req);
+
+  if (isNaN(profileId)) {
+    return sendError(res, 400, "Invalid profile ID");
+  }
+
+  if (!userId) {
+    return sendError(
+      res,
+      400,
+      "User UUID is required. Set ADMIN_USER_ID environment variable or provide user_uuid in query/header."
+    );
+  }
+
+  const { name } = req.body.data || {};
+
+  if (name === undefined || name === null) {
+    return sendError(res, 400, "Name is required");
+  }
+
+  // Verify that the profile belongs to the current user
+  const { data: profile, error: profileError } = await supabase
+    .from("profile")
+    .select("id, user_uuid")
+    .eq("id", profileId)
+    .eq("user_uuid", userId)
+    .single();
+
+  if (profileError || !profile) {
+    return sendError(res, 403, "Profile not found or access denied");
+  }
+
+  // Set session variable for the current user UUID
+  await setCurrentUserUuid(userId);
+
+  // Update the profile name
+  const { data: updatedProfile, error: updateError } = await supabase
+    .from("profile")
+    .update({ name: name })
+    .eq("id", profileId)
+    .select("id, name, user_uuid")
+    .single();
+
+  if (updateError) {
+    console.error("Update profile error:", updateError);
+    return sendError(res, 500, `Failed to update profile: ${updateError.message}`);
+  }
+
+  if (!updatedProfile) {
+    return sendError(res, 500, "Failed to update profile: No data returned");
+  }
+
+  sendSuccess(res, updatedProfile);
+});
+
 // Get songs for a profile
 app.get("/api/profiles/:profileId/songs", async (req, res) => {
   const profileId = parseInt(req.params.profileId);

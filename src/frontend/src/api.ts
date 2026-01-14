@@ -63,6 +63,19 @@ export async function getProfiles(): Promise<Profile[]> {
     return response.data || [];
 }
 
+/**
+ * Update a profile's name
+ * @param profileId - The ID of the profile to update
+ * @param name - The new name for the profile
+ * @returns The updated profile
+ */
+export async function updateProfileName(profileId: number, name: string): Promise<Profile> {
+    const response = await apiRequest<{ success: boolean; data: Profile }>('put', `/profiles/${profileId}`, {
+        name,
+    });
+    return response.data;
+}
+
 export interface ProfileSong {
     id: number;
 }

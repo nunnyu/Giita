@@ -458,44 +458,6 @@ const Practice: React.FC = () => {
                   </div>
                 </div>
               </div>
-
-              {/* Metadata Section */}
-              <div className="flex flex-col col-span-2">
-                <h3 className="text-white text-lg font-semibold mb-3">Metadata</h3>
-                {saveError && (
-                  <div className="mb-3 text-red-500 text-sm">{saveError}</div>
-                )}
-                <div className="bg-dark-800 bg-opacity-20 rounded-lg border border-dark-700 p-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-dark-400 text-xs mb-1">Spotify Track ID</p>
-                      <p className="text-white text-sm font-mono">
-                        {selectedSong.song.spotify_track_id || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-dark-400 text-xs mb-1">Added to Profile</p>
-                      <p className="text-white text-sm">
-                        {selectedSong.created_at
-                          ? new Date(selectedSong.created_at).toLocaleDateString()
-                          : "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-dark-400 text-xs mb-1">Song ID</p>
-                      <p className="text-white text-sm font-mono">
-                        {selectedSong.song.id || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-dark-400 text-xs mb-1">Profile Song ID</p>
-                      <p className="text-white text-sm font-mono">
-                        {selectedSong.id || "N/A"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         ) : (
